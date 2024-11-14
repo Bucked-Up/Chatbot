@@ -12,7 +12,7 @@
     href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="./style/style.css">
-  <script src="scripts.js" defer></script>
+
 </head>
 
 <body>
@@ -21,5 +21,84 @@
   </div>
 
 </body>
+
+<script src="scripts.js"></script>
+<script>
+  setUpChat({
+    webhookEndpoint: "https://google.com",
+    klaviyoA: "",
+    klaviyoG: "",
+    waitingTime: 1,
+    items: [
+      {
+        question:
+          "Hello!! Welcome to the Bucked Up Diet Generator. In order to receive a comprehensive diet plan please answer the following questions:",
+        inputType: "no-input",
+      },
+      {
+        question: "What is your name?",
+        inputType: "text",
+        inputId: "first_name",
+      },
+      {
+        question: "What is your email?",
+        inputType: "email",
+        inputId: "email",
+      },
+      {
+        question: "What is your year of birth?",
+        inputType: "number",
+        inputId: "year_of_birth",
+      },
+      {
+        question: "What is your main objective?",
+        inputType: "text",
+        inputId: "main_objective",
+      },
+      {
+        question: "How often do you exercice?",
+        inputType: "options",
+        optionsName: "how_often_exercise",
+        options: [
+          { text: "1x a Week", id: "1x-week" },
+          { text: "2x a Week", id: "2x-week" },
+          { text: "3x a Week", id: "3x-week" },
+          { text: "4x a Week", id: "4x-week" },
+          { text: "5x or more a Week", id: "5x-week" },
+        ],
+      },
+      {
+        question: "What type of exercise you do the most?",
+        inputType: "options",
+        optionsName: "exercise_type",
+        options: [
+          { text: "CARDIO", id: "cardio" },
+          { text: "WEIGHT TRAINING", id: "weight-training" },
+          { text: "HIIT/CROSSFIT", id: "hiit-crossfit" },
+          { text: "OTHER ACTIVITIES", id: "other" },
+        ],
+      },
+      {
+        question: "How tall are you? (ft)",
+        inputType: "number",
+        inputId: "height",
+      },
+      {
+        question: "What is your weight? (pounds)",
+        inputType: "number",
+        inputId: "weight",
+      },
+      {
+        question: "What is your country?",
+        inputType: "text",
+        inputId: "country",
+      },
+      {
+        question: "Wait a minute, we are creating your diet plan",
+        inputType: "submit",
+      },
+    ]
+  })
+</script>
 
 </html>

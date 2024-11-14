@@ -33,7 +33,8 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
   };
 
   const handleSubmitQuestion = (input) => {
-    if (input.value.trim() !== "") input.type = "hidden";
+    if (input.value.trim() !== "" && input.checkValidity()) input.type = "hidden";
+    else input.classList.add("invalid-input")
   };
 
   const createInput = (params) => {
@@ -43,6 +44,8 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
     button.type = "button";
     const input = document.createElement("input");
     input.type = params.inputType;
+    input.required = "required";
+    if (input.type === "number") input.pattern = "[0-9]*"
     input.id = params.inputId;
     input.placeholder = "Type here...";
     wrapper.appendChild(input);
@@ -126,10 +129,10 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
         form.appendChild(element);
         input.focus();
         const handleQuestionSubmit = () => {
-          if (input.value.trim() !== "") {
+          if (input.value.trim() !== "" && input.checkValidity()) {
             form.appendChild(createResponse(element.querySelector("input").value));
             handleNextQuestion(nextStep);
-          }
+          } else input.classList.add("invalid-input")
         };
         element.querySelector("button").addEventListener("click", handleQuestionSubmit);
         input.addEventListener("keydown", e => e.key === "Enter" && handleQuestionSubmit(input));
