@@ -6,7 +6,9 @@
 //     font-family: Poppins;
 //   }
 // }
-
+*{
+  scroll-behavior: smooth;
+}
 .chat {
   background-color: white;
   border-radius: 8px;

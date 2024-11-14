@@ -109,11 +109,15 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
     e.preventDefault();
   });
 
+  const scrollToBottom = () => document.documentElement.scrollTop = document.documentElement.scrollHeight;
+
   const handleNextQuestion = async (nextStep, maxStep) => {
     if (nextStep === maxStep) return;
     form.appendChild(spinner);
+    scrollToBottom();
     await delay(waitingTime);
     handleQuestions(nextStep);
+    scrollToBottom();
   };
 
   const handleQuestions = async (step = 0) => {
