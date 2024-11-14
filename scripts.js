@@ -88,7 +88,8 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
       }
 
       case "text":
-      case "number": {
+      case "number":
+      case "email": {
         const message = createMessage(item);
         message.appendChild(createInput(item));
         questions.push({ type: "text-question", element: message });
