@@ -205,7 +205,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
               throw new Error("Klaviyo Network response was not ok: " + response.statusText);
             }
             const data = await response.json();
-            if (!data.success) throw new Error("Error sending to klaviyo: " + data.errors);
+            if (data.errors) throw new Error("Error sending to klaviyo: " + data.errors);
           } catch (e) {
             console.warn(e);
           }
