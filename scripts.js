@@ -1,6 +1,6 @@
-const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) => {
+const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
   const wrapper = document.getElementById("chat-wrapper");
-  const form = document.createElement("form");
+  const form = document.createElement("div");
   form.id = "chat";
   form.classList.add("chat");
   wrapper.appendChild(form)
@@ -20,7 +20,7 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
     message.innerHTML = params.question;
     message.classList.add("message");
     message.classList.add("message-bot");
-    if (params.inputType === "submit" || params.inputType === "last-response") message.classList.add("has-pic");
+    if (params.type === "POST") message.classList.add("has-pic");
     return message;
   };
 
@@ -43,9 +43,8 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
     const button = document.createElement("button");
     button.type = "button";
     const input = document.createElement("input");
-    input.type = params.inputType;
+    input.type = params.type;
     input.required = "required";
-    if (input.type === "number") input.pattern = "[0-9]*"
     input.id = params.inputId;
     input.placeholder = "Type here...";
     wrapper.appendChild(input);
@@ -79,14 +78,10 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
 
   const questions = [];
   items.forEach((item) => {
-    switch (item.inputType) {
+    switch (item.type) {
+      case "POST":
       case "no-input": {
-        questions.push({ type: "message", element: createMessage(item) });
-        break;
-      }
-
-      case "submit": {
-        questions.push({ type: "submit", element: createMessage(item) });
+        questions.push({ type: item.type, endpoint: item.endpoint, responseField: item.responseField, hasKlaviyo: item.hasKlaviyo, element: createMessage(item) });
         break;
       }
 
@@ -114,14 +109,22 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
     e.preventDefault();
   });
 
+  const handleNextQuestion = async (nextStep, maxStep) => {
+    if (nextStep === maxStep) return;
+    form.appendChild(spinner);
+    await delay(waitingTime);
+    handleQuestions(nextStep);
+  };
+
   const handleQuestions = async (step = 0) => {
     document.getElementById("spinner")?.remove();
     const nextStep = step + 1;
-    const { type, element } = questions[step];
+    const maxStep = questions.length;
+    const { type, element, ...params } = questions[step];
     switch (type) {
-      case "message": {
+      case "no-input": {
         form.appendChild(element);
-        handleNextQuestion(nextStep);
+        handleNextQuestion(nextStep, maxStep);
         break;
       }
       case "text-question": {
@@ -131,7 +134,7 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
         const handleQuestionSubmit = () => {
           if (input.value.trim() !== "" && input.checkValidity()) {
             form.appendChild(createResponse(element.querySelector("input").value));
-            handleNextQuestion(nextStep);
+            handleNextQuestion(nextStep, maxStep);
           } else input.classList.add("invalid-input")
         };
         element.querySelector("button").addEventListener("click", handleQuestionSubmit);
@@ -142,11 +145,11 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
         form.appendChild(element);
         element.querySelectorAll("input").forEach((input) => input.addEventListener("change", () => {
           form.appendChild(createResponse(element.querySelector("input:checked").value));
-          handleNextQuestion(nextStep)
+          handleNextQuestion(nextStep, maxStep)
         }));
         break;
       }
-      case "submit": {
+      case "POST": {
         form.appendChild(element);
         form.appendChild(spinner);
         const body = {}
@@ -208,9 +211,9 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
           }
         };
 
-        const postWebhook = async () => {
+        const postWebhook = async ({ endpoint, responseField }) => {
           try {
-            const response = await fetch(webhookEndpoint, {
+            const response = await fetch(endpoint, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -218,25 +221,24 @@ const setUpChat = ({ items, webhookEndpoint, klaviyoA, klaviyoG, waitingTime }) 
               body: JSON.stringify(body),
             });
             const data = await response.json();
-            form.appendChild(createMessage({ question: data.data, inputType: "last-response" }));
+            form.appendChild(createMessage({ question: data[responseField], type: "POST" }));
             document.getElementById("spinner")?.remove();
           } catch (error) {
             console.error('Error:', error);
-            alert("Oops, something went wrong. Try our products in the meantime!")
-            await delay(1000);
-            window.location.href = "https://buckedup.com"
+            alert("Oops, something went wrong.");
           }
         }
-        Promise.all([postWebhook(), postKlaviyo()]);
+        if (params.hasKlaviyo) {
+          await Promise.all([postWebhook({ endpoint: params.endpoint, responseField: params.responseField }), postKlaviyo()]);
+        }
+        else {
+          await postWebhook({ endpoint: params.endpoint, responseField: params.responseField })
+        }
+        handleNextQuestion(nextStep, maxStep);
       }
     }
   };
 
-  const handleNextQuestion = async (nextStep) => {
-    form.appendChild(spinner);
-    await delay(waitingTime);
-    handleQuestions(nextStep);
-  };
   handleQuestions();
 
   window.onbeforeunload = function (event) {
