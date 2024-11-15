@@ -27,77 +27,21 @@
   setUpChat({
     klaviyoA: "",
     klaviyoG: "",
-    waitingTime: 1,
+    waitingTime: 1000,
+    isWebflow: true,
     items: [
       {
-        question:
-          "Hello!! Welcome to the Bucked Up Diet Generator. In order to receive a comprehensive diet plan please answer the following questions:",
-        type: "no-input",
-      },
-      {
-        question: "What is your name?",
-        type: "text",
-        inputId: "first_name",
-      },
-      {
-        question: "What is your email?",
-        type: "email",
-        inputId: "email",
-      },
-      {
-        question: "What is your year of birth?",
-        type: "number",
-        inputId: "year_of_birth",
-      },
-      {
-        question: "What is your main objective?",
-        type: "text",
-        inputId: "main_objective",
-      },
-      {
-        question: "How often do you exercice?",
+        question: "test?",
         type: "options",
-        optionsName: "how_often_exercise",
+        optionsName: "test",
         options: [
-          { text: "1x a Week", id: "1x-week" },
-          { text: "2x a Week", id: "2x-week" },
-          { text: "3x a Week", id: "3x-week" },
-          { text: "4x a Week", id: "4x-week" },
-          { text: "5x or more a Week", id: "5x-week" },
+          { text: "yes", id: "yes" },
+          { text: "no", id: "no" },
         ],
       },
       {
-        question: "What type of exercise you do the most?",
-        type: "options",
-        optionsName: "exercise_type",
-        options: [
-          { text: "CARDIO", id: "cardio" },
-          { text: "WEIGHT TRAINING", id: "weight-training" },
-          { text: "HIIT/CROSSFIT", id: "hiit-crossfit" },
-          { text: "OTHER ACTIVITIES", id: "other" },
-        ],
-      },
-      {
-        question: "How tall are you?",
-        type: "text",
-        inputId: "height",
-      },
-      {
-        question: "What is your weight?",
-        type: "text",
-        inputId: "weight",
-      },
-      {
-        question: "What is your country?",
-        type: "text",
-        inputId: "country",
-      },
-      {
-        question: "Wait a minute, we are calculating your caloric intake",
-        type: "POST",
-        endpoint: "",
-        responseField: "data",
-        hasKlaviyo: false,
+        question: "test",
+        type: "submit",
       },
     ]
   })

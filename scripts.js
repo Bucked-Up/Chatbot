@@ -1,4 +1,4 @@
-const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
+const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
   const wrapper = document.getElementById("chat-wrapper");
   const form = document.createElement("div");
   form.id = "chat";
@@ -20,7 +20,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
     message.innerHTML = params.question;
     message.classList.add("message");
     message.classList.add("message-bot");
-    if (params.type === "POST") message.classList.add("has-pic");
+    if (params.type === "POST" || params.type === "submit") message.classList.add("has-pic");
     return message;
   };
 
@@ -46,6 +46,8 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
     input.type = params.type;
     input.required = "required";
     input.id = params.inputId;
+    input.name = params.inputId;
+    if (isWebflow) input.classList.add("w-input");
     input.placeholder = "Type here...";
     wrapper.appendChild(input);
     wrapper.appendChild(button);
@@ -70,6 +72,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
       input.id = option.id;
       input.value = option.text;
       input.name = params.optionsName;
+      if(isWebflow) input.classList.add("w-radio-input");
       label.appendChild(input);
       wrapper.appendChild(label);
     });
@@ -80,6 +83,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
   items.forEach((item) => {
     switch (item.type) {
       case "POST":
+      case "submit":
       case "no-input": {
         questions.push({ type: item.type, endpoint: item.endpoint, responseField: item.responseField, hasKlaviyo: item.hasKlaviyo, element: createMessage(item) });
         break;
@@ -151,6 +155,17 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime }) => {
           form.appendChild(createResponse(element.querySelector("input:checked").value));
           handleNextQuestion(nextStep, maxStep)
         }));
+        break;
+      }
+      case "submit": {
+        form.appendChild(element);
+        form.appendChild(spinner);
+        const button = document.createElement("button");
+        button.type="submit";
+        button.style.display="none";
+        form.appendChild(button);
+        window.onbeforeunload = null;
+        button.click();
         break;
       }
       case "POST": {
