@@ -6,7 +6,7 @@
 //     font-family: Poppins;
 //   }
 // }
-*{
+* {
   scroll-behavior: smooth;
 }
 .chat {
@@ -74,7 +74,7 @@
       &:has(input[type="hidden"]) {
         display: none;
       }
-      &:has(.invalid-input){
+      &:has(.invalid-input) {
         border-color: red;
       }
       width: 100%;

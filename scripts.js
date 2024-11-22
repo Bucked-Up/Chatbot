@@ -3,7 +3,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
   const form = document.createElement("div");
   form.id = "chat";
   form.classList.add("chat");
-  wrapper.appendChild(form)
+  wrapper.appendChild(form);
   const delay = (ms) => {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
@@ -34,7 +34,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
 
   const handleSubmitQuestion = (input) => {
     if (input.value.trim() !== "" && input.checkValidity()) input.type = "hidden";
-    else input.classList.add("invalid-input")
+    else input.classList.add("invalid-input");
   };
 
   const createInput = (params) => {
@@ -82,11 +82,11 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
   const handleItem = (item, position) => {
     const addQuestion = (question) => {
       if (position) {
-        questions.splice(position, 0, question)
-        return
+        questions.splice(position, 0, question);
+        return;
       }
-      questions.push(question)
-    }
+      questions.push(question);
+    };
     switch (item.type) {
       case "POST":
       case "submit":
@@ -113,7 +113,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
         break;
       }
     }
-  }
+  };
 
   const questions = [];
   items.forEach((item) => handleItem(item));
@@ -122,7 +122,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
     e.preventDefault();
   });
 
-  const scrollToBottom = () => document.documentElement.scrollTop = document.documentElement.scrollHeight;
+  const scrollToBottom = () => (document.documentElement.scrollTop = document.documentElement.scrollHeight);
 
   const handleNextQuestion = async (nextStep, maxStep) => {
     if (nextStep === maxStep) return;
@@ -145,27 +145,29 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
         break;
       }
       case "text-question": {
-        const input = element.querySelector("input")
+        const input = element.querySelector("input");
         form.appendChild(element);
         input.focus();
         const handleQuestionSubmit = () => {
           if (input.value.trim() !== "" && input.checkValidity()) {
             form.appendChild(createResponse(element.querySelector("input").value));
             handleNextQuestion(nextStep, maxStep);
-          } else input.classList.add("invalid-input")
+          } else input.classList.add("invalid-input");
         };
         element.querySelector("button").addEventListener("click", handleQuestionSubmit);
-        input.addEventListener("keydown", e => e.key === "Enter" && handleQuestionSubmit(input));
+        input.addEventListener("keydown", (e) => e.key === "Enter" && handleQuestionSubmit(input));
         break;
       }
       case "option-question": {
         form.appendChild(element);
-        element.querySelectorAll("input").forEach((input) => input.addEventListener("change", () => {
-          const value = element.querySelector("input:checked").value
-          form.appendChild(createResponse(value));
-          if (params.nextItems && params.nextItems[value]) handleItem(params.nextItems[value], step + 1)
-          handleNextQuestion(nextStep, maxStep)
-        }));
+        element.querySelectorAll("input").forEach((input) =>
+          input.addEventListener("change", () => {
+            const value = element.querySelector("input:checked").value;
+            form.appendChild(createResponse(value));
+            if (params.nextItems && params.nextItems[value]) handleItem(params.nextItems[value], step + 1);
+            handleNextQuestion(nextStep, maxStep);
+          })
+        );
         break;
       }
       case "submit": {
@@ -182,13 +184,13 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
       case "POST": {
         form.appendChild(element);
         form.appendChild(spinner);
-        const body = {}
-        Array.from(form.querySelectorAll("input:not([type='radio'])")).forEach(input => {
-          body[input.id] = input.value
-        })
-        Array.from(form.querySelectorAll("input[type='radio']:checked")).forEach(input => {
-          body[input.name] = input.value
-        })
+        const body = {};
+        Array.from(form.querySelectorAll("input:not([type='radio'])")).forEach((input) => {
+          body[input.id] = input.value;
+        });
+        Array.from(form.querySelectorAll("input[type='radio']:checked")).forEach((input) => {
+          body[input.name] = input.value;
+        });
 
         const postKlaviyo = async () => {
           if (!klaviyoA) return;
@@ -197,39 +199,37 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
             const response = await fetch(`https://a.klaviyo.com/client/subscriptions?company_id=${klaviyoA}`, {
               method: "POST",
               headers: {
-                'Content-Type': 'application/json',
-                "revision": "2024-10-15",
+                "Content-Type": "application/json",
+                revision: "2024-10-15",
               },
-              body: JSON.stringify(
-                {
-                  "data": {
-                    "type": "subscription",
-                    "attributes": {
-                      "profile": {
-                        "data": {
-                          "type": "profile",
-                          "attributes": {
-                            "properties": {
-                              "Accepts-Marketing": "true",
-                              ...klaviyoBody,
-                            },
-                            "email": email,
-                            "first_name": first_name,
-                          }
-                        }
-                      }
+              body: JSON.stringify({
+                data: {
+                  type: "subscription",
+                  attributes: {
+                    profile: {
+                      data: {
+                        type: "profile",
+                        attributes: {
+                          properties: {
+                            "Accepts-Marketing": "true",
+                            ...klaviyoBody,
+                          },
+                          email: email,
+                          first_name: first_name,
+                        },
+                      },
                     },
-                    "relationships": {
-                      "list": {
-                        "data": {
-                          "type": "list",
-                          "id": klaviyoG,
-                        }
-                      }
-                    }
-                  }
-                }
-              ),
+                  },
+                  relationships: {
+                    list: {
+                      data: {
+                        type: "list",
+                        id: klaviyoG,
+                      },
+                    },
+                  },
+                },
+              }),
             });
             if (!response.ok) {
               throw new Error("Klaviyo Network response was not ok: " + response.statusText);
@@ -244,9 +244,9 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
         const postWebhook = async ({ endpoint, responseField }) => {
           try {
             const response = await fetch(endpoint, {
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
               body: JSON.stringify(body),
             });
@@ -254,15 +254,14 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
             form.appendChild(createMessage({ question: data[responseField], type: "POST" }));
             document.getElementById("spinner")?.remove();
           } catch (error) {
-            console.error('Error:', error);
+            console.error("Error:", error);
             alert("Oops, something went wrong.");
           }
-        }
+        };
         if (params.hasKlaviyo) {
           await Promise.all([postWebhook({ endpoint: params.endpoint, responseField: params.responseField }), postKlaviyo()]);
-        }
-        else {
-          await postWebhook({ endpoint: params.endpoint, responseField: params.responseField })
+        } else {
+          await postWebhook({ endpoint: params.endpoint, responseField: params.responseField });
         }
         handleNextQuestion(nextStep, maxStep);
       }
