@@ -41,36 +41,16 @@
         ],
         nextItems: {
           yes: {
-            question: "why?",
-            type: "options",
-            optionsName: "why",
-            options: [
-              { text: "idk", id: "idk" },
-              { text: "eheheh", id: "eheheh" }
-            ],
-            nextItems: {
-              idk: {
-                question: "are you certain?",
-                type: "options",
-                optionsName: "is-certain",
-                options: [
-                  {text: "absolutely", id: "absolutely"},
-                  {text: "i dont think so", id: "i-dont-think-so"},
-                ]
-              }
-            }
-          },
-          no: {
-            question: "explain then:",
+            question: "What is the co-signer credit score?",
             type: "text",
-            id: "explain-then",
-          }
+            inputId: "co-signer-credit-score"
+          },
         }
       },
       {
         question: "Ok. expain then",
         type: "text",
-        id: "explain",
+        inputId: "explain",
       },
       {
         question: "submitting",

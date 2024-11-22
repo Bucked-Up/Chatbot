@@ -166,7 +166,14 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow, noScroll
           input.addEventListener("change", () => {
             const value = element.querySelector("input:checked").value;
             form.appendChild(createResponse(value));
-            if (params.nextItems && params.nextItems[value]) handleItem(params.nextItems[value], step + 1);
+            if (params.nextItems && params.nextItems[value]) {
+              const items = params.nextItems[value];
+              if (Array.isArray(items)) {
+                items.forEach((item, i) => {
+                  handleItem(item, nextStep + i);
+                });
+              } else handleItem(items, nextStep);
+            }
             handleNextQuestion(nextStep, maxStep);
           })
         );
