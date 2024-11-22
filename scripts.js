@@ -72,20 +72,26 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
       input.id = option.id;
       input.value = option.text;
       input.name = params.optionsName;
-      if(isWebflow) input.classList.add("w-radio-input");
+      if (isWebflow) input.classList.add("w-radio-input");
       label.appendChild(input);
       wrapper.appendChild(label);
     });
     return wrapper;
   };
 
-  const questions = [];
-  items.forEach((item) => {
+  const handleItem = (item, position) => {
+    const addQuestion = (question) => {
+      if (position) {
+        questions.splice(position, 0, question)
+        return
+      }
+      questions.push(question)
+    }
     switch (item.type) {
       case "POST":
       case "submit":
       case "no-input": {
-        questions.push({ type: item.type, endpoint: item.endpoint, responseField: item.responseField, hasKlaviyo: item.hasKlaviyo, element: createMessage(item) });
+        addQuestion({ type: item.type, endpoint: item.endpoint, responseField: item.responseField, hasKlaviyo: item.hasKlaviyo, element: createMessage(item) });
         break;
       }
 
@@ -94,7 +100,7 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
       case "email": {
         const message = createMessage(item);
         message.appendChild(createInput(item));
-        questions.push({ type: "text-question", element: message });
+        addQuestion({ type: "text-question", element: message });
         break;
       }
 
@@ -103,11 +109,14 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
         wrapper.classList.add("message-wrapper");
         wrapper.appendChild(createMessage(item));
         wrapper.appendChild(createOptions(item));
-        questions.push({ type: "option-question", element: wrapper });
+        addQuestion({ type: "option-question", element: wrapper, nextItems: item.nextItems });
         break;
       }
     }
-  });
+  }
+
+  const questions = [];
+  items.forEach((item) => handleItem(item));
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -152,7 +161,9 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
       case "option-question": {
         form.appendChild(element);
         element.querySelectorAll("input").forEach((input) => input.addEventListener("change", () => {
-          form.appendChild(createResponse(element.querySelector("input:checked").value));
+          const value = element.querySelector("input:checked").value
+          form.appendChild(createResponse(value));
+          if (params.nextItems && params.nextItems[value]) handleItem(params.nextItems[value], step + 1)
           handleNextQuestion(nextStep, maxStep)
         }));
         break;
@@ -161,8 +172,8 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
         form.appendChild(element);
         form.appendChild(spinner);
         const button = document.createElement("button");
-        button.type="submit";
-        button.style.display="none";
+        button.type = "submit";
+        button.style.display = "none";
         form.appendChild(button);
         window.onbeforeunload = null;
         button.click();

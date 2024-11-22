@@ -38,9 +38,41 @@
           { text: "yes", id: "yes" },
           { text: "no", id: "no" },
         ],
+        nextItems: {
+          yes: {
+            question: "why?",
+            type: "options",
+            optionsName: "why",
+            options: [
+              { text: "idk", id: "idk" },
+              { text: "eheheh", id: "eheheh" }
+            ],
+            nextItems: {
+              idk: {
+                question: "are you certain?",
+                type: "options",
+                optionsName: "is-certain",
+                options: [
+                  {text: "absolutely", id: "absolutely"},
+                  {text: "i dont think so", id: "i-dont-think-so"},
+                ]
+              }
+            }
+          },
+          no: {
+            question: "explain then:",
+            type: "text",
+            id: "explain-then",
+          }
+        }
       },
       {
-        question: "test",
+        question: "Ok. expain then",
+        type: "text",
+        id: "explain",
+      },
+      {
+        question: "submitting",
         type: "submit",
       },
     ]
