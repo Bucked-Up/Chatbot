@@ -1,4 +1,4 @@
-const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
+const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow, noScrollDown }) => {
   const wrapper = document.getElementById("chat-wrapper");
   const form = document.createElement("div");
   form.id = "chat";
@@ -122,7 +122,9 @@ const setUpChat = ({ items, klaviyoA, klaviyoG, waitingTime, isWebflow }) => {
     e.preventDefault();
   });
 
-  const scrollToBottom = () => (document.documentElement.scrollTop = document.documentElement.scrollHeight);
+  const scrollToBottom = () => {
+    if (!noScrollDown) document.documentElement.scrollTop = document.documentElement.scrollHeight;
+  };
 
   const handleNextQuestion = async (nextStep, maxStep) => {
     if (nextStep === maxStep) return;
